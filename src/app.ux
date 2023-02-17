@@ -1,0 +1,44 @@
+<script>
+/**
+ * 应用级别的配置，供所有页面公用
+ */
+
+const $utils = require('./helper/utils').default
+const $apis = require('./helper/apis').default
+
+/* @desc: 注入方法至全局 global,以便页面调用 */
+const hook2global = global.__proto__ || global
+hook2global.$utils = $utils
+hook2global.$apis = $apis
+// let nativeAd = null;
+export default {
+    onCreate() { },
+
+    getnativead(typenid = '') {
+        return new Promise((resolve, reject) => {
+            const ad = require('@service.ad')
+            console.log('hhhhh')
+            const adUnitId = '83755'
+            try {
+                // if (!nativeAd) {
+                const nativeAd = ad.createNativeAd({
+                    adUnitId: adUnitId
+                });
+                nativeAd.onLoad(e => {
+                    console.log('succeeeeewww', adUnitId)
+                    console.log(e)
+                    resolve(e.adList[0]);
+                });
+                nativeAd.onError(err => {
+                    console.log('err', err, new Date().getTime())
+                    resolve(err);
+                });
+                nativeAd.load();
+            } catch (error) {
+                console.log(error)
+                resolve(error);
+            }
+        })
+    }
+}
+</script>
